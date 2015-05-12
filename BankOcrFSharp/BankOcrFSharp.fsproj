@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="digitConstants.fs" />
     <Compile Include="BankOcr.fs" />
+    <Compile Include="BankOcrTests.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
     <None Include="packages.config" />
