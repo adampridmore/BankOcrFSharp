@@ -31,7 +31,7 @@ let toLines (str:string) =
 let toChars (string:string) =
   string.ToString().ToCharArray()
 
-let textToThreeCharacters text =
+let stringToThreeCharacters text =
   text.ToString().ToCharArray()
   |> Seq.windowed 3
   |> Seq.mapi (fun i x -> (i, x)) 
@@ -43,10 +43,10 @@ let newLine = System.Environment.NewLine
 let joinLines lines =
   System.String.Join (newLine, lines |> Seq.toList)
   
-let scanDigits ocrText =
-  let lines = (ocrText 
+let splitTextInto3by3digitStrings ocrText =
+  let lines = ocrText 
               |> toLines 
-              |> Seq.map textToThreeCharacters)
+              |> Seq.map stringToThreeCharacters
               |> Seq.toArray
 
   let line1 = lines.[0]
@@ -55,6 +55,10 @@ let scanDigits ocrText =
 
   Seq.zip3 line1 line2 line3
   |> Seq.map (fun (a,b,c) -> joinLines [a;b;c])
+
+let scanDigits ocrText =
+  ocrText 
+  |> splitTextInto3by3digitStrings
   |> Seq.map (fun c -> newLine + c)
   |> Seq.map scanDigit
   |> Seq.reduce (+)
@@ -79,7 +83,18 @@ let ``scan 0-9 text``()=
 
 [<Test>]
 let ``text to 3 character strings``()=
-  "123456" |> textToThreeCharacters |> should equal ["123";"456"]
+  "123456" |> stringToThreeCharacters|> should equal ["123";"456"]
+
+
+[<Test>]
+let ``split text into 3 by 3 digit strings``()=
+  let text = @"
+abcjkl
+defmno
+ghipqr"
+
+  text |> splitTextInto3by3digitStrings |> should equal ["abc\r\ndef\r\nghi";"jkl\r\nmno\r\npqr"]
+
 
 [<Test>]
 let ``scratch``()=
