@@ -24,6 +24,15 @@ let ``scan 0-9 text``()=
   scanDigits text |> should equal "0123456789"
 
 [<Test>]
+let ``scan invalid digit``()=
+  let text = @"
+ _ xxx
+| |xxx
+|_|xxx"
+
+  scanDigits text |> should equal "0?"
+
+[<Test>]
 let ``text to 3 character strings``()=
   "123456" |> stringToThreeCharacters|> should equal ["123";"456"]
 
