@@ -94,3 +94,27 @@ let ``scan a 2 digit`` () =
 [<Test>]
 let ``scan a 3 digit`` () =
   three|> scanDigit |> should equal "3"
+
+[<Test>]
+let ``number status checksum valid``()=
+  "345882865" |> getNumberStatus |> should equal Valid
+
+[<Test>]
+let ``number status checksum invalid``()=
+  "111111111" |> getNumberStatus |> should equal Invalid
+
+[<Test>]
+let ``number status with illegal characters``()=
+  "?11111111" |> getNumberStatus |> should equal Illegal
+
+[<Test>]
+let ``process number with status when valid``()=
+  "345882865" |> processNumberWithStatus |> should equal "345882865"
+
+[<Test>]
+let ``process number with status when invalid checksum``()=
+  "111111111" |> processNumberWithStatus |> should equal "111111111 ERR"
+
+[<Test>]
+let ``process number with status when invalid characters``()=
+  "34588286?" |> processNumberWithStatus |> should equal "34588286? ILL"

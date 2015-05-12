@@ -60,4 +60,34 @@ let scanDigits ocrText =
   |> Seq.map (fun c -> newLine + c)
   |> Seq.map scanDigit
   |> Seq.reduce (+)
-   
+  
+let numberStringToInts (text:string) : int seq =
+  text.ToCharArray()
+  |> Seq.map(fun c -> c.ToString())
+  |> Seq.map (fun c -> System.Int32.Parse(c))
+
+let containsInvalidChars (number:string) =
+  number.ToCharArray() 
+  |> Seq.exists (fun c -> c = '?')
+
+type status = |Valid|Invalid|Illegal
+
+let getNumberStatus (number:string) = 
+  let calculateChecksum number = 
+    number 
+    |> numberStringToInts 
+    |> Seq.mapi (fun i n -> ( 9-i) * n)
+    |> Seq.sum
+    |> (function x -> x%11)
+
+  if containsInvalidChars number then Illegal
+  else  match calculateChecksum number with
+        | 0 -> Valid
+        | _ -> Invalid
+
+let processNumberWithStatus number = 
+  match getNumberStatus number with
+  | Valid -> number
+  | Invalid -> sprintf "%s ERR" number
+  | Illegal -> sprintf "%s ILL" number
+  
