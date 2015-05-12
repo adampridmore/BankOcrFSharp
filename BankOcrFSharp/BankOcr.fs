@@ -6,8 +6,16 @@ open digitConstants
 
 let scanDigit ocrDigit = 
   match ocrDigit with
+  | x when x = zero -> "0"
   | x when x = one  -> "1"
   | x when x = two -> "2"
+  | x when x = three -> "3"
+  | x when x = four -> "4"
+  | x when x = five-> "5"
+  | x when x = six -> "6"
+  | x when x = seven -> "7"
+  | x when x = eight -> "8"
+  | x when x = nine -> "9"
   | _ -> "?"
 
 let threeListTo3Tuple list = 
@@ -50,14 +58,6 @@ let scanDigits ocrText =
   |> Seq.map (fun c -> newLine + c)
   |> Seq.map scanDigit
   |> Seq.reduce (+)
-
-[<Test>]
-let ``scan a 1 digit`` () =
-  one |> scanDigit |> should equal "1"
-
-[<Test>]
-let ``scan a 2 digit`` () =
-  two |> scanDigit |> should equal "2"
    
 [<Test>]
 let ``scan multiple digits``()=
@@ -67,6 +67,15 @@ let ``scan multiple digits``()=
  | |_ "
 
   scanDigits text |> should equal "12"
+
+[<Test>]
+let ``scan 0-9 text``()=
+  let text = @"
+ _     _  _     _  _  _  _  _ 
+| | |  _| _||_||_ |_   ||_||_|
+|_| | |_  _|  | _||_|  ||_| _|"
+
+  scanDigits text |> should equal "0123456789"
 
 [<Test>]
 let ``text to 3 character strings``()=
@@ -106,3 +115,16 @@ let ``abc to chars``()=
 [<Test>]
 let ``three list to three tuple``()=
   ["a";"b";"c"] |> threeListTo3Tuple |> should equal ("a", "b", "c")
+
+
+[<Test>]
+let ``scan a 1 digit`` () =
+  one |> scanDigit |> should equal "1"
+
+[<Test>]
+let ``scan a 2 digit`` () =
+  two |> scanDigit |> should equal "2"
+
+[<Test>]
+let ``scan a 3 digit`` () =
+  three|> scanDigit |> should equal "3"
